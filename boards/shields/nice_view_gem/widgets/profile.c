@@ -3,6 +3,7 @@
 
 LV_IMG_DECLARE(profiles);
 
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 static void draw_inactive_profiles(lv_obj_t *canvas, const struct status_state *state) {
     lv_draw_img_dsc_t img_dsc;
     lv_draw_img_dsc_init(&img_dsc);
@@ -18,8 +19,11 @@ static void draw_active_profile(lv_obj_t *canvas, const struct status_state *sta
 
     lv_canvas_draw_rect(canvas, 85 + offset, 143, 8, 8, &rect_white_dsc);
 }
+#endif
 
 void draw_profile_status(lv_obj_t *canvas, const struct status_state *state) {
+#if !IS_ENABLED(CONFIG_ZMK_SPLIT) || IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     draw_inactive_profiles(canvas, state);
     draw_active_profile(canvas, state);
+#endif
 }

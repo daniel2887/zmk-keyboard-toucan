@@ -19,7 +19,9 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/endpoints.h>
 #include <zmk/keymap.h>
 #include <zmk/usb.h>
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #include <zmk/split/central.h>
+#endif
 
 #include "battery.h"
 #include "battery_peripheral.h"
@@ -97,6 +99,7 @@ ZMK_SUBSCRIPTION(widget_battery_status, zmk_usb_conn_state_changed);
 // R
 static void set_battery_peripheral_status(struct zmk_widget_screen *widget,
                                struct battery_peripheral_status_state state) {
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
     widget->state.charging_p = state.usb_present;
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
@@ -105,6 +108,7 @@ static void set_battery_peripheral_status(struct zmk_widget_screen *widget,
     zmk_split_central_get_peripheral_battery_level(0, &level);
 
     widget->state.battery_p = level;
+#endif
     draw_top(widget->obj, widget->cbuf, &widget->state);
 }
 
@@ -119,7 +123,7 @@ static struct battery_peripheral_status_state battery_peripheral_status_get_stat
 
 
     return (struct battery_peripheral_status_state){
-        .level = ev->state_of_charge,
+        .level = (ev != NULL) ? ev->state_of_charge : 0,
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
         .usb_present = zmk_usb_is_powered(),
 #endif /* IS_ENABLED(CONFIG_USB_DEVICE_STACK) */
@@ -131,6 +135,7 @@ ZMK_DISPLAY_WIDGET_LISTENER(widget_battery_peripheral_status, struct battery_per
 
 ZMK_SUBSCRIPTION(widget_battery_peripheral_status, zmk_peripheral_battery_state_changed);
 
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 /**
  * Layer status
  **/
@@ -195,6 +200,7 @@ ZMK_SUBSCRIPTION(widget_output_status, zmk_usb_conn_state_changed);
 #if defined(CONFIG_ZMK_BLE)
 ZMK_SUBSCRIPTION(widget_output_status, zmk_ble_active_profile_changed);
 #endif
+#endif
 
 /**
  * Activity state handling for sleep screen
@@ -251,8 +257,10 @@ int zmk_widget_screen_init(struct zmk_widget_screen *widget, lv_obj_t *parent) {
     sys_slist_append(&widgets, &widget->node);
     widget_battery_status_init();
     widget_battery_peripheral_status_init();
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     widget_layer_status_init();
     widget_output_status_init();
+#endif
 
     return 0;
 }
