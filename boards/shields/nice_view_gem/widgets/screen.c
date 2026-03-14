@@ -30,6 +30,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include "profile.h"
 #include "screen.h"
 #include "sleep.h"
+#include "background.h"
 
 struct connection_status_state {
     bool connected;
@@ -51,11 +52,20 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     }
 
     // Draw widgets
+#if IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
     draw_output_status(canvas, state);
     draw_layer_status(canvas, state);
     draw_profile_status(canvas, state);
     draw_battery_status(canvas, state);
     draw_battery_peripheral_status(canvas, state);
+#else
+    // Draw a nice background and peripheral battery, because
+    // the peripheral half can't display most anything else,
+    // for now.
+    draw_background(canvas);
+    // TODO: draw battery peripheral on the *left* side.
+    //draw_battery_peripheral_left_status(canvas, state);
+#endif
 }
 
 /**
