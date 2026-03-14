@@ -2,8 +2,8 @@ manifest:
   defaults:
     revision: v0.3
   remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/zmkfirmware
+    - name: daniel2887
+      url-base: https://github.com/daniel2887
     - name: petejohanson
       url-base: https://github.com/petejohanson/
     - name: caksoylar
@@ -12,7 +12,8 @@ manifest:
       url-base: https://github.com/geeksville
   projects:
     - name: zmk
-      remote: zmkfirmware
+      remote: daniel2887
+      revision: v0.3_ds87
       import: app/west.yml
     - name: cirque-input-module
       remote: geeksville
