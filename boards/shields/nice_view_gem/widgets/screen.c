@@ -25,6 +25,7 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
 #include "battery.h"
 #include "battery_peripheral.h"
+#include "battery_peripheral_left.h"
 #include "layer.h"
 #include "output.h"
 #include "profile.h"
@@ -63,8 +64,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     // the peripheral half can't display most anything else,
     // for now.
     draw_background(canvas);
-    // TODO: draw battery peripheral on the *left* side.
-    //draw_battery_peripheral_left_status(canvas, state);
+    draw_battery_peripheral_left_status(canvas, state);
 #endif
 }
 
