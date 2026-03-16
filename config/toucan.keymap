@@ -23,8 +23,22 @@
     break-on-mod; /* stop caps_word when pressing a modifier */
 };
 
+#if defined(HAS_TRACKPAD)
+&pointer_accel {
+    input-type = <INPUT_EV_REL>;
+    min-factor = <900>;        // 0.9x minimum
+    max-factor = <3000>;       // 4.0x maximum
+    speed-threshold = <500>;  // Start accelerating earlier
+    speed-max = <6000>;          // 6000 counts/sec for max accel
+    acceleration-exponent = <2>; // Cubic acceleration curve
+    track-remainders;          // Track fractional movements
+};
+
 &glidepoint_listener {
-    input-processors = <&zip_xy_scaler 200 100>; // Multiplier and divisor
+    input-processors = <
+        &zip_xy_scaler 200 100 // Multiplier and divisor
+        &pointer_accel
+    > ;
     scroller {
         layers = <NAV>;
         input-processors = <
@@ -34,6 +48,7 @@
         >;
     };
 };
+#endif
 
 / {
     conditional_layers {
