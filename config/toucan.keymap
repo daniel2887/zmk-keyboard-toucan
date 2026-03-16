@@ -23,6 +23,18 @@
     break-on-mod; /* stop caps_word when pressing a modifier */
 };
 
+&glidepoint_listener {
+    input-processors = <&zip_xy_scaler 200 100>; // Multiplier and divisor
+    scroller {
+        layers = <NAV>;
+        input-processors = <
+            &zip_xy_to_scroll_mapper
+            &zip_scroll_scaler 1 15 // Multiplier and divisor
+            &zip_scroll_transform INPUT_TRANSFORM_Y_INVERT
+        >;
+    };
+};
+
 / {
     conditional_layers {
         compatible = "zmk,conditional-layers";
